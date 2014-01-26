@@ -1,11 +1,17 @@
 package com.monsieurchak.baidulbsdemo.ui;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
 import java.util.ArrayList;
-
 import com.monsieurchak.baidulbsdemo.R;
-
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -19,17 +25,35 @@ import android.widget.Toast;
  * @author monsieurchak
  *
  */
-public class ChatRoom_Activity extends Activity implements OnClickListener, UIActivity{
+public class ChatRoom_Activity extends Activity implements OnClickListener, UIActivity, Runnable{
 
 	ListView dialogListView;
 	Button sendButton;
 	EditText sendText;
 	ArrayAdapter<String> adapter;
 	ArrayList<String> arrayList = new ArrayList<String>();
-	
+
+	//chat_text: 有待发送出去的消息
+	//chat_in: 从服务器接收到的消息
+	private String chat_text, chat_in;
+	private String userName = "DJZhu";
+	private String ip = "192.168.1.102";
+
+	//Socket通信端口号
+	public static final int PORT = 8521;
+
+	//声明套接字对象和线程对象
+	Socket socket;
+
+	//声明客户端数据输入输出流
+	DataInputStream in;
+	DataOutputStream out;
+
+	//是否成功进入聊天室的标志
+	boolean flag = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_chat_room);
 		dialogListView = (ListView)findViewById(R.id.dialog_listview);
@@ -39,17 +63,45 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 		sendButton = (Button)findViewById(R.id.dialog_send_btn);
 		sendButton.setOnClickListener(this);
 		sendText = (EditText)findViewById(R.id.dialog_send_edit);
+
+		//在子线程中启动连接
+		Thread threadInit = new Thread(){
+			@Override
+			public void run() {
+
+				//判断数据合法性
+				try {
+
+					//创建Socket对象
+					socket = new Socket(ip,PORT);
+					in = new DataInputStream(socket.getInputStream());
+					out = new DataOutputStream(socket.getOutputStream());
+					out.writeUTF("$$" + userName + "  "  + getCurrentTime() + "上线了！");
+				} catch (Exception e2) {
+					Log.d("TAG", "无法连接错误:" + e2.toString());
+				}
+			}
+		};
+		threadInit.start();
+		
+		new Thread(ChatRoom_Activity.this).start();
 	}
+
+
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
-		String sendMsg = sendText.getText().toString();
+		chat_text = sendText.getText().toString();
 		sendText.setText("");
-		if (sendMsg != null ) {
-			if (!sendMsg.equals("")) {
-				arrayList.add(sendMsg);
-				adapter.notifyDataSetChanged();
+		if (chat_text != null ) {
+			if (!chat_text.equals("")) {
+
+				//向服务器发送信息
+				try {
+					out.writeUTF("--" + userName + "  " + getCurrentTime() + "说:\n" + chat_text);
+				} catch (Exception e2) {
+					System.out.println("客户端发送信息错误！");
+				}
 			}
 			else {
 				Toast.makeText(this, "不能发送空消息！", Toast.LENGTH_SHORT).show();
@@ -60,13 +112,54 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 
 	@Override
 	public void init() {
-		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void refresh(Object... params) {
-		// TODO Auto-generated method stub
-		
+	}
+
+
+
+	@Override
+	public void run() {
+		try {
+			socket = new Socket(ip,PORT);
+			in = new DataInputStream(socket.getInputStream());
+			while (true) {
+				Log.d("TAG", "Nothing");
+				chat_in = in.readUTF();
+				if (!"".equals(chat_in)) {
+					Log.d("TAG", "Message" + chat_in);
+					Bundle bundle = new Bundle();
+					bundle.putString("msg", chat_in);
+					Message msg = new Message();
+					msg.setData(bundle);
+					handler.sendMessage(msg);
+				}
+			}
+		} catch (Exception e) {
+			Log.d("TAG", "接受消息错误：" + e.toString());
+		}
+	}
+	
+	@SuppressLint("HandlerLeak")
+	Handler handler = new Handler(){
+		public void handleMessage(Message msg) {
+			Bundle bundle = msg.getData();
+			String content = bundle.getString("msg");
+			arrayList.add(content);
+			adapter.notifyDataSetChanged();
+		};
+	};
+	
+	private String getCurrentTime(){
+		Time t=new Time("GMT+8"); // or Time t=new Time("GMT+8"); 加上Time Zone资料。
+
+		t.setToNow(); // 取得系统时间。
+		int hour = t.hour; // 0-23
+		int minute = t.minute;
+		int second = t.second;
+		return "" + hour + ":" + minute + ":" + second + "  ";
 	}
 }
