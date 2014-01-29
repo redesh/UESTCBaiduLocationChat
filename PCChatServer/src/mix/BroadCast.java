@@ -1,6 +1,7 @@
 package mix;
 
 import java.io.IOException;
+import bean.LBSMessage;
 
 /**
  * 服务器端广播程序
@@ -11,7 +12,8 @@ public class BroadCast extends Thread{
 
 	ClientThread clientThread;
 	ServerThread serverThread;
-	String str;
+
+	LBSMessage lbsMessage = null;
 
 	public BroadCast(ServerThread serverThread) {
 		this.serverThread = serverThread;
@@ -31,23 +33,26 @@ public class BroadCast extends Thread{
 				}
 
 				//获取服务器端信息数组存储的第一条信息
-				str = (String)this.serverThread.messages.firstElement();
-			}
-			synchronized (serverThread.clients) {
-				for (int i = 0; i < serverThread.clients.size(); i++) {
-					clientThread = (ClientThread)serverThread.clients.elementAt(i);
-					try {
+				lbsMessage = (LBSMessage)this.serverThread.messages.firstElement();
 
-						//向有记录的每一个客户端发送数据信息
-						clientThread.out.writeUTF(str);
-					} catch (IOException e2) {
-						System.out.println("I/O错误：" + e2.toString());
+				synchronized (serverThread.clients) {
+					for (int i = 0; i < serverThread.clients.size(); i++) {
+						clientThread = (ClientThread)serverThread.clients.elementAt(i);
+						try {
+						
+							//向有记录的每一个客户端发送数据信息
+							clientThread.out.writeObject(lbsMessage);
+						} catch (IOException e2) {
+							System.out.println("I/O错误--》：" + e2.toString());
+						}
 					}
-				}
 
-				//删除已经发送过的那条数据信息
-				this.serverThread.messages.removeElement(str);
+					//删除已经发送过的那条数据信息
+					this.serverThread.messages.removeElement(lbsMessage);
+				}
 			}
 		}
+
 	}
 }
+

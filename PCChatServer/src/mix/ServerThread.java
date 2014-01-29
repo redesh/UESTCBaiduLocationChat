@@ -6,6 +6,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
+
+
+import bean.LBSMessage;
+
 /**
  * 服务器端监听程序
  * 负责创建ServerSocket以监听是否有新的客户端连接到服务器端
@@ -22,7 +26,7 @@ public class ServerThread extends Thread{
 	Vector<ClientThread> clients;
 	
 	//用以存储客户端发来的，服务器接收到但未发送出去的给另客户端信息
-	Vector<Object> messages;
+	Vector<LBSMessage> messages;
 	
 	//BroadCast类负责服务器向客户端广播信息
 	BroadCast broadCast;
@@ -32,7 +36,7 @@ public class ServerThread extends Thread{
 	
 	public ServerThread() {
 		clients = new Vector<ClientThread>();
-		messages = new Vector<Object>();
+		messages = new Vector<LBSMessage>();
 		
 		try {
 			

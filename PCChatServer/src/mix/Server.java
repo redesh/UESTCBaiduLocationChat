@@ -2,6 +2,9 @@ package mix;
 
 import java.awt.BorderLayout;
 import javax.swing.*;
+
+
+
 import java.awt.event.*;
 
 /**
@@ -65,6 +68,7 @@ public class Server extends JFrame implements ActionListener{
 	public static void main(String [] args) {
 		Server server = new Server();
 		server.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 	}
 
 	@Override

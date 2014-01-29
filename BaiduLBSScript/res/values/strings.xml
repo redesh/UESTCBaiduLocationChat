@@ -18,4 +18,5 @@
 	<string name="chatRoomTips">模拟百度地图API——\n 1.输入聊天室代号，点击确认加入之\n 2.点击创建聊天室创建新的 </string>
 	<string name="creat_chat_room">创建</string>
 	<string name="dialog_send">发送</string>
+	<string name="eMail">邮箱</string>
 </resources>

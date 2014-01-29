@@ -40,11 +40,16 @@ public final class R {
         public static final int LinearLayout1=0x7f090010;
         public static final int Login=0x7f09000b;
         public static final int RelativeLayout1=0x7f090000;
-        public static final int action_settings=0x7f090013;
+        public static final int action_settings=0x7f09001a;
+        public static final int buttonRegister=0x7f090019;
         public static final int dialog_listview=0x7f090001;
         public static final int dialog_send_btn=0x7f090003;
         public static final int dialog_send_edit=0x7f090002;
+        public static final int editTextEmail=0x7f090018;
+        public static final int editTextID=0x7f090014;
+        public static final int editTextPassword=0x7f090016;
         public static final int findIDBack=0x7f09000c;
+        public static final int imageButtonIcon=0x7f090013;
         public static final int imageView1=0x7f090004;
         public static final int logo_Text=0x7f09000e;
         public static final int passWord=0x7f09000a;
@@ -56,6 +61,8 @@ public final class R {
         public static final int testregist=0x7f090011;
         public static final int text1=0x7f09000f;
         public static final int textView1=0x7f090005;
+        public static final int textView2=0x7f090015;
+        public static final int textView3=0x7f090017;
     }
     public static final class layout {
         public static final int activity_chat_room=0x7f030000;
@@ -78,6 +85,7 @@ public final class R {
         public static final int chatRoomTips=0x7f07000e;
         public static final int creat_chat_room=0x7f07000f;
         public static final int dialog_send=0x7f070010;
+        public static final int eMail=0x7f070011;
         public static final int findIDBack=0x7f070006;
         public static final int hello_world=0x7f070002;
         public static final int login=0x7f070005;

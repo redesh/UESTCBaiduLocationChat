@@ -1,10 +1,11 @@
 package com.monsieurchak.baidulbsdemo.ui;
 
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import com.monsieurchak.baidulbsdemo.R;
+import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -46,12 +47,14 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 	Socket socket;
 
 	//声明客户端数据输入输出流
-	DataInputStream in;
-	DataOutputStream out;
+	ObjectInputStream in;
+	ObjectOutputStream out;
 
 	//是否成功进入聊天室的标志
 	boolean flag = false;
 
+	LBSMessage message = null;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -74,9 +77,10 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 
 					//创建Socket对象
 					socket = new Socket(ip,PORT);
-					in = new DataInputStream(socket.getInputStream());
-					out = new DataOutputStream(socket.getOutputStream());
-					out.writeUTF("$$" + userName + "  "  + getCurrentTime() + "上线了！");
+					in = new ObjectInputStream(socket.getInputStream());
+					out = new ObjectOutputStream(socket.getOutputStream());
+					message = new LBSMessage("$$" + userName + "  "  + getCurrentTime() + "上线了！");
+					out.writeObject(message);
 				} catch (Exception e2) {
 					Log.d("TAG", "无法连接错误:" + e2.toString());
 				}
@@ -98,7 +102,8 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 
 				//向服务器发送信息
 				try {
-					out.writeUTF("--" + userName + "  " + getCurrentTime() + "说:\n" + chat_text);
+					message = new LBSMessage("--" + userName + "  " + getCurrentTime() + "说:\n" + chat_text);
+					out.writeObject(message);
 				} catch (Exception e2) {
 					System.out.println("客户端发送信息错误！");
 				}
@@ -125,12 +130,11 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 	public void run() {
 		try {
 			socket = new Socket(ip,PORT);
-			in = new DataInputStream(socket.getInputStream());
+			in = new ObjectInputStream(socket.getInputStream());
 			while (true) {
-				Log.d("TAG", "Nothing");
-				chat_in = in.readUTF();
+				message = (LBSMessage) in.readObject();
+				chat_in = message.getBODY();
 				if (!"".equals(chat_in)) {
-					Log.d("TAG", "Message" + chat_in);
 					Bundle bundle = new Bundle();
 					bundle.putString("msg", chat_in);
 					Message msg = new Message();
