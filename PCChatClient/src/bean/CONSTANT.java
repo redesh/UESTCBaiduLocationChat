@@ -18,8 +18,11 @@ public class CONSTANT {
 	//服务器事务性广播头部
 	public static final int MSG_HEAD_BROADCAST = 4;
 	
+	//聊天室相关消息头部
+	public static final int MSG_HEAD_ROOM = 5;
+	
 	/**
-	 * 一下为Message的ADDITION标识符常量
+	 * 以下为Message的ADDITION标识符常量
 	 */
 	
 	//登录
@@ -31,8 +34,45 @@ public class CONSTANT {
 	//登录成功广播
 	public static final String MSG_ADDITION_LOGIN_SUCCEED = "MSG_ADDITION_LOGIN_SUCCEED";
 	
+	//登录失败广播
+	public static final String MSG_ADDITION_LOGIN_FAILED = "MSG_ADDITION_LOGIN_FAILED";
+	
+	//注册
+	public static final String MSG_ADDITION_REGISTER = "MSG_ADDITION_REGISTER";
+	
+	//注册成功
+	public static final String MSG_ADDITION_REGISTER_SUCCEED = "MSG_ADDITION_REGISTER_SUCCEED";
+	
+	//注册失败
+	public static final String MSG_ADDITION_REGISTER_FAILED = "MSG_ADDITION_REGISTER_FAILED";
+	
+	//注销成功
+	public static final String MSG_ADDITION_LOGOUT_SUCCEED = "MSG_ADDITION_LOGOUT_SUCCEED";
+	
+	//注销失败
+	public static final String MSG_ADDITION_LOGOUT_FAILED = "MSG_ADDITION_LOGOUT_FAILED";
+	
+	//创建聊天室
+	public static final String MSG_ADDITION_CREATEROOM = "MSG_ADDITION_CREATEROOM";
+	
+	//加入聊天室
+	public static final String MSG_ADDITION_JOINROOM = "MSG_ADDITION_JOINROOM";
+	
+	//创建聊天室成功
+	public static final String MSG_ADDITION_CREATEROOM_SUCCEED = "MSG_ADDITION_CREATEROOM_SUCCEED";
+	
+	//创建聊天室失败
+	public static final String MSG_ADDITION_CREATEROOM_FAILED = "MSG_ADDITION_CREATEROOM_FAILED";
+	
+	//加入聊天室成功
+	public static final String MSG_ADDITION_JOINROOM_SUCCEED = "MSG_ADDITION_JOINROOM_SUCCEED";
+	
+	//加入聊天室失败
+	public static final String MSG_ADDITION_JOINROOM_FAILED = "MSG_ADDITION_JOINROOM_FAILED";
+	
+	
 	/**
-	 * 以下为Message的ADDITION.LOGIN相关的标示符常量
+	 * 以下为Message的ADDITION中用户信息相关的标示符常量
 	 */
 	
 	//用户名

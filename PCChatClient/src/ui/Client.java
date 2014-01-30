@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -133,6 +131,7 @@ public class Client extends JFrame implements Runnable, ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == loginButton) {
+
 			//获取用户名
 			name = nameField.getText();
 
@@ -142,20 +141,20 @@ public class Client extends JFrame implements Runnable, ActionListener {
 			//判断数据合法性
 			if (true) {
 				try {
+
 					//创建Socket对象
 					socket = new Socket(ip,PORT);
 					out = new ObjectOutputStream(socket.getOutputStream());
-					Date time = new Date(System.currentTimeMillis());
-					SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
-					String timestr= format.format(time);
 					HashMap<String, String> user = new HashMap<String, String>();
 					user.put(CONSTANT.MSG_USERNAME, "USERNAME");
 					user.put(CONSTANT.MSG_PASSWORD, "PASSWORD");
-					lbsMessage = new LBSMessage("$$" + name + "  " + timestr + "上线了！");
-					lbsMessage.setHEAD(CONSTANT.MSG_HEAD_OPERATED);
-					lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_LOGIN);
-					lbsMessage.setUSER("2011042020030");
-					lbsMessage.setPASS("djzhu2213");
+					currentUser.userInfo.setID("us2er");
+					currentUser.userInfo.setPASSWORD("pass");
+					lbsMessage = new LBSMessage("$$" + name + "  " + "上线了！");
+					lbsMessage.setHEAD(CONSTANT.MSG_HEAD_COUNT);
+					lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_REGISTER);
+					lbsMessage.setUSER(currentUser.userInfo.getID());
+					lbsMessage.setPASS(currentUser.userInfo.getPASSWORD());
 					out.writeObject(lbsMessage);
 					out.flush();
 				} catch (Exception e2) {
@@ -171,13 +170,9 @@ public class Client extends JFrame implements Runnable, ActionListener {
 				//获取需要发送的信息
 				chat_text = textSentField.getText();
 				if (chat_text != null) {
-					Date time = new Date(System.currentTimeMillis());
-					SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
-					String timestr= format.format(time);
-
 					//向服务器发送信息
 					try {
-						lbsMessage = new LBSMessage("--" + nameField.getText() + "  " + timestr + "说:\n" + chat_text);
+						lbsMessage = new LBSMessage(currentUser.userInfo.getID() + "  " + "说:\n" + chat_text);
 						out.writeObject(lbsMessage);
 					} catch (Exception e2) {
 						System.out.println("客户端发送信息错误！");
@@ -217,7 +212,6 @@ public class Client extends JFrame implements Runnable, ActionListener {
 				System.err.println("客户端退出错误: " + e2);
 			}
 			this.setVisible(false);
-
 		}
 	}
 
@@ -238,13 +232,14 @@ public class Client extends JFrame implements Runnable, ActionListener {
 		}
 		while (true) {
 			try {
-				lbsMessage = (LBSMessage) in.readObject();
+				LBSMessage recMessage = (LBSMessage) in.readObject();
 
-				switch (lbsMessage.getHEAD()) {
-				case CONSTANT.MSG_HEAD_ORDINAl:	//收到普通广播消息
-					System.out.print("消息接收");
+				switch (recMessage.getHEAD()) {
+
+				case CONSTANT.MSG_HEAD_ORDINAl:		//普通广播消息
+
 					//读取服务器发来的数据BODY
-					chat_in = lbsMessage.getBODY();
+					chat_in = recMessage.getBODY();
 					if (chat_in != null && !(chat_in.equals(""))) {
 
 						//显示消息
@@ -252,21 +247,42 @@ public class Client extends JFrame implements Runnable, ActionListener {
 					}
 					break;
 
-				case CONSTANT.MSG_HEAD_BROADCAST:	//收到事务性广播消息
+				case CONSTANT.MSG_HEAD_BROADCAST:	//事务性广播消息
 
 					//读取数据的ADDITION
-					String ADD = lbsMessage.getADDITION();
+					String ADD = recMessage.getADDITION();
 
 					//读取数据的USER，以判断广播接收对象
-					String USER = lbsMessage.getUSER();
-					if(USER.equals('\"' + "2011042020030" + '\"')){	//广播接收对象为本客户端
+					String USER = recMessage.getUSER();
+					if(USER.equals(currentUser.userInfo.getID())){	//广播接收对象为本客户端
 						if (ADD.equals(CONSTANT.MSG_ADDITION_LOGIN_SUCCEED)) {	//登录成功
 							jTextArea.setText("登陆成功!\n");
 							currentUser.setLogin(true);	//当前用户成功登录
 							System.out.println("客户端登录成功，本客户端");
 						}
-						else {	//登录失败
+						else if (ADD.equals(CONSTANT.MSG_ADDITION_REGISTER_SUCCEED)) {	//注册成功
+							jTextArea.setText("注册成功!\n");
+							currentUser.setLogin(true);	//当前用户成功登录
+							System.out.println("客户端注册成功，本客户端");
+						}
+						else if(ADD.equals(CONSTANT.MSG_ADDITION_LOGIN_FAILED)){	//登录失败
+							jTextArea.setText("登录失败!\n");
+							currentUser.setLogin(false);
 							System.out.println("客户端登录失败，本客户端");
+						}
+						else if (ADD.equals(CONSTANT.MSG_ADDITION_REGISTER_FAILED)) {	//注册失败
+							jTextArea.setText("注册失败!\n");
+							currentUser.setLogin(false);
+							System.out.println("客户端注册失败，本客户端");
+						}
+						else if (ADD.equals(CONSTANT.MSG_ADDITION_LOGOUT_SUCCEED)) {	//注销成功
+							jTextArea.setText("注销成功!\n");
+							currentUser.setLogin(false);
+							System.out.println("客户端注销成功，本客户端");
+						}
+						else if (ADD.equals(CONSTANT.MSG_ADDITION_LOGOUT_FAILED)) {		//注销失败
+							jTextArea.setText("注销失败!\n");
+							System.out.println("客户端注销失败，本客户端");
 						}
 					}
 					else {	//广播接收对象不是本客户端

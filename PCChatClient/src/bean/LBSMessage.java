@@ -14,13 +14,14 @@ public class LBSMessage implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	private int HEAD = 0;		//消息头,CONSTANT类提供常量
-	private String BODY = null;		//消息体
-	private String SENDER = null;	//消息发送者，匿名发送表示为null
-	private String RECEIVER = null;	//收信人,发送给所有用户表示为null
-	private String ADDITION = null;		//附加信息标示符
+	private int Head = 0;		//消息头,CONSTANT类提供常量
+	private String Body = null;		//消息体
+	private String Sender = null;	//消息发送者，匿名发送表示为null
+	private String Reveiver = null;	//收信人,发送给所有用户表示为null
+	private String Addition = null;		//附加信息标示符
 	private String USER = null;		//附加消息：用户名
 	private String PASS = null;		//附加消息：用户密码
+	private RoomInfo roomInfo = null;	//
 	
 	public LBSMessage() {
 		
@@ -35,33 +36,33 @@ public class LBSMessage implements Serializable{
 	 * @param BODY 消息体
 	 */
 	public LBSMessage(String BODY){
-		this.HEAD = CONSTANT.MSG_HEAD_ORDINAl;
-		this.BODY = BODY;
+		this.Head = CONSTANT.MSG_HEAD_ORDINAl;
+		this.Body = BODY;
 	}
 	
 	public int getHEAD() {
-		return HEAD;
+		return Head;
 	}
 	public void setHEAD(int hEAD) {
-		HEAD = hEAD;
+		Head = hEAD;
 	}
 	public String getBODY() {
-		return BODY;
+		return Body;
 	}
 	public void setBODY(String bODY) {
-		BODY = bODY;
+		Body = bODY;
 	}
 	public String getSENDER() {
-		return SENDER;
+		return Sender;
 	}
 	public void setSENDER(String sENDER) {
-		SENDER = sENDER;
+		Sender = sENDER;
 	}
 	public String getRECEIVER() {
-		return RECEIVER;
+		return Reveiver;
 	}
 	public void setRECEIVER(String rECEIVER) {
-		RECEIVER = rECEIVER;
+		Reveiver = rECEIVER;
 	}
 	public String getUSER() {
 		return USER;
@@ -78,17 +79,25 @@ public class LBSMessage implements Serializable{
 		PASS = pASS;
 	}
 	public String getADDITION() {
-		return ADDITION;
+		return Addition;
 	}
 
 	public void setADDITION(String aDDITION) {
-		ADDITION = aDDITION;
+		Addition = aDDITION;
+	}
+
+	public RoomInfo getRoomInfo() {
+		return roomInfo;
+	}
+
+	public void setRoomInfo(RoomInfo roomInfo) {
+		this.roomInfo = roomInfo;
 	}
 
 	@Override
 	public String toString() {
-		return "LBSMessage [HEAD=" + HEAD + ", BODY=" + BODY + ", SENDER="
-				+ SENDER + ", RECEIVER=" + RECEIVER + ", ADDITION=" + ADDITION
+		return "LBSMessage [HEAD=" + Head + ", BODY=" + Body + ", SENDER="
+				+ Sender + ", RECEIVER=" + Reveiver + ", ADDITION=" + Addition
 				+ ", USER=" + USER + ", PASS=" + PASS + "]";
 	}
 

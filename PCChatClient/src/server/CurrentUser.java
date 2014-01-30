@@ -5,11 +5,16 @@ import bean.UserInfo;
 public class CurrentUser {
 
 	//当前用户的基本信息
-	UserInfo currentUser = null;
+	public UserInfo userInfo = null;
+	
 	
 	//当前用户是否已经成功登录
 	boolean isLogin = false;
 
+	public CurrentUser() {
+		userInfo = new UserInfo();
+	}
+	
 	public boolean isLogin() {
 		return isLogin;
 	}
