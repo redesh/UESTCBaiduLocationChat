@@ -12,14 +12,17 @@ public class CONSTANT {
 	//逻辑操作消息头部标志，包括登陆、注销等
 	public static final int MSG_HEAD_OPERATED = 2;
 	
-	//账户操作消息头部，包括注册，查询等
+	//账户操作消息头部标志，包括注册，查询等
 	public static final int MSG_HEAD_COUNT = 3;
 	
-	//服务器事务性广播头部
+	//服务器事务性广播头部标志
 	public static final int MSG_HEAD_BROADCAST = 4;
 	
-	//聊天室相关消息头部
+	//聊天室相关事务性消息头部标志，包括加入，创建聊天室
 	public static final int MSG_HEAD_ROOM = 5;
+	
+	//聊天室普通消息头部标志
+	public static final int MSG_HEAD_ROOM_CHAT = 6;
 	
 	/**
 	 * 以下为Message的ADDITION标识符常量
@@ -69,6 +72,9 @@ public class CONSTANT {
 	
 	//加入聊天室失败
 	public static final String MSG_ADDITION_JOINROOM_FAILED = "MSG_ADDITION_JOINROOM_FAILED";
+	
+	//退出聊天室
+	public static final String MSG_ADDITION_QUITROOM = "MSG_ADDITION_JOINROOM_QUITROOM";
 	
 	
 	/**

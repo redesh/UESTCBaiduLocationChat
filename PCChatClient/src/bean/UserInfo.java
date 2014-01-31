@@ -12,6 +12,7 @@ public class UserInfo {
 	public String LAST_LOGIN_TIME = null;	//上次登录时间
 	public String LOGIN_COUNTER = null;	//登陆总次数
 	public String SIGN = null;	//签名
+	public String ROOMS [] = null;
 	
 	public UserInfo() {
 	}

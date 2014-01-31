@@ -17,11 +17,11 @@ public class LBSMessage implements Serializable{
 	private int Head = 0;		//消息头,CONSTANT类提供常量
 	private String Body = null;		//消息体
 	private String Sender = null;	//消息发送者，匿名发送表示为null
-	private String Reveiver = null;	//收信人,发送给所有用户表示为null
+	private String Receiver = null;	//收信人,发送给所有用户表示为null
 	private String Addition = null;		//附加信息标示符
 	private String USER = null;		//附加消息：用户名
 	private String PASS = null;		//附加消息：用户密码
-	private RoomInfo roomInfo = null;	//
+	private RoomInfo roomInfo = null;	//附加消息: 聊天室消息
 	
 	public LBSMessage() {
 		
@@ -33,6 +33,9 @@ public class LBSMessage implements Serializable{
 	 * SENDER = null;
 	 * RECEIVER = null;
 	 * ADDITION = null;
+	 * USER = null;
+	 * PASS = null;
+	 * roomInfo = null;
 	 * @param BODY 消息体
 	 */
 	public LBSMessage(String BODY){
@@ -59,10 +62,10 @@ public class LBSMessage implements Serializable{
 		Sender = sENDER;
 	}
 	public String getRECEIVER() {
-		return Reveiver;
+		return Receiver;
 	}
 	public void setRECEIVER(String rECEIVER) {
-		Reveiver = rECEIVER;
+		Receiver = rECEIVER;
 	}
 	public String getUSER() {
 		return USER;
@@ -97,7 +100,7 @@ public class LBSMessage implements Serializable{
 	@Override
 	public String toString() {
 		return "LBSMessage [HEAD=" + Head + ", BODY=" + Body + ", SENDER="
-				+ Sender + ", RECEIVER=" + Reveiver + ", ADDITION=" + Addition
+				+ Sender + ", RECEIVER=" + Receiver + ", ADDITION=" + Addition
 				+ ", USER=" + USER + ", PASS=" + PASS + "]";
 	}
 

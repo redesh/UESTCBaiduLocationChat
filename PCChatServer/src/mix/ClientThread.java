@@ -10,13 +10,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-
-
-
 import db.DBManager;
 import bean.CONSTANT;
 import bean.DBInfo;
 import bean.LBSMessage;
+import bean.RoomInfo;
 
 /**
  * 单个服务端与客户端连接程序
@@ -81,7 +79,42 @@ public class ClientThread extends Thread{
 				lbsMessage = (LBSMessage) in.readObject();
 
 				switch(lbsMessage.getHEAD()){	//判定消息HEAD
-				case CONSTANT.MSG_HEAD_ORDINAl:		//普通信息
+
+				case CONSTANT.MSG_HEAD_ROOM_CHAT:	//聊天室普通聊天信息
+
+					//读入客户端发送来的聊天信息文本
+					String roomMessage = lbsMessage.getBODY();
+
+					//读入客户端发来的聊天室信息
+					RoomInfo roomInfo = lbsMessage.getRoomInfo();
+
+					//检查聊天信息合法性
+					if (roomMessage != null && !(roomMessage.equals(""))){
+
+						//遍历所有聊天室
+						for (int i = 0; i < serverThread.rooms.size(); i++) {
+
+							//如果存在目标聊天室
+							RoomThread room = serverThread.rooms.get(i);
+							if (room.roomInfo.getID().equals(roomInfo.getID())) {
+								synchronized (room.roomMessages) {
+									System.out.println("发送消息、、、");
+									Date time = new Date(System.currentTimeMillis());
+									SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
+									String timestr= format.format(time);
+									roomMessage = timestr + ">>" + roomMessage;
+									room.roomMessages.addElement(new LBSMessage(roomMessage));
+
+									//服务器端文本框显示新消息
+									Server.jTextArea1.append(roomMessage + '\n');
+								}
+							}
+						}
+					}
+
+					break;
+
+				case CONSTANT.MSG_HEAD_ORDINAl:		//普通广播信息
 
 					//读入客户端发送来的信息
 					String message = lbsMessage.getBODY();
@@ -168,7 +201,7 @@ public class ClientThread extends Thread{
 					}
 					else if (lbsMessage.equals(CONSTANT.MSG_ADDITION_LOGOUT)){	//注销登录
 					}
-					
+
 					break;
 
 				case CONSTANT.MSG_HEAD_COUNT:		//账户信息，包括注册操作
@@ -227,16 +260,71 @@ public class ClientThread extends Thread{
 					break;
 
 				case CONSTANT.MSG_HEAD_ROOM:
+					if (this.userName == null) {	//用户必须先行登录
+						break;
+					}
+					LBSMessage RoomResult = new LBSMessage();
+					RoomResult.setHEAD(CONSTANT.MSG_HEAD_ROOM);
+					RoomResult.setUSER(this.userName);
 					if (lbsMessage.getADDITION().equals(CONSTANT.MSG_ADDITION_JOINROOM)) {
-						
+						boolean isLogin = false;
+						for (int i = 0; i < serverThread.rooms.size(); i++) {
+							RoomThread room = serverThread.rooms.get(i);
+
+							//如果服务器上存在指定的聊天室
+							if (room.roomInfo.getID().equals(lbsMessage.getRoomInfo().getID())) {	
+								room.roomClients.add(this);
+								RoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_SUCCEED);
+								serverThread.messages.add(RoomResult);
+								isLogin = true;
+							}
+							else {
+
+							}
+						}
+						if (!isLogin) {
+							RoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_FAILED);
+							serverThread.messages.add(RoomResult);
+						}
 					}
 					else if (lbsMessage.getADDITION().equals(CONSTANT.MSG_ADDITION_CREATEROOM)) {
+						boolean isExist = false;
+						RoomThread room = null;
 						
+						//遍历服务器中的聊天室
+						for (int i = 0; i < serverThread.rooms.size(); i++) {	
+							room = serverThread.rooms.get(i);
+
+							//如果服务器上存在指定ID的聊天室
+							if (room.roomInfo.getID().equals(lbsMessage.getRoomInfo().getID())){
+								RoomResult.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM_FAILED);
+								serverThread.messages.add(RoomResult);
+								isExist = true;
+							}
+						}
+						if (!isExist) {
+							RoomInfo roomInfo1 = lbsMessage.getRoomInfo();
+							RoomThread newRoom = new RoomThread(roomInfo1);
+							newRoom.start();
+							newRoom.roomClients.add(this);
+							serverThread.rooms.add(newRoom);
+							RoomResult.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM_SUCCEED);
+							serverThread.messages.add(RoomResult);
+						}
 					}
-					
-					
+					else if (lbsMessage.getADDITION().equals(CONSTANT.MSG_ADDITION_QUITROOM)) {
+						for (int i = 0; i < serverThread.rooms.size(); i++) {
+
+							//找到指定ID对应的聊天室
+							if (serverThread.rooms.get(i).roomInfo.getID().
+									equals(lbsMessage.getRoomInfo().getID())) {
+								RoomThread quitRoomThread = serverThread.rooms.get(i);
+								quitRoomThread.roomClients.removeElement(this);
+							}
+						}
+					}
 					break;
-					
+
 				default:
 					break;
 				}

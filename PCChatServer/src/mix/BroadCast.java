@@ -43,7 +43,7 @@ public class BroadCast extends Thread{
 							//向有记录的每一个客户端发送数据信息
 							clientThread.out.writeObject(lbsMessage);
 						} catch (IOException e2) {
-							//System.out.println("I/O错误--》--：" + e2.toString());
+							System.out.println("普通广播I/O错误--》--：" + e2.toString());
 						}
 					}
 

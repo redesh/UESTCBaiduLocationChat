@@ -19,6 +19,7 @@ import server.CurrentUser;
 
 import bean.CONSTANT;
 import bean.LBSMessage;
+import bean.RoomInfo;
 
 /**
  * PC客户端
@@ -131,6 +132,7 @@ public class Client extends JFrame implements Runnable, ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == loginButton) {
+			System.out.println("loginButton is Clicked");
 
 			//获取用户名
 			name = nameField.getText();
@@ -148,11 +150,11 @@ public class Client extends JFrame implements Runnable, ActionListener {
 					HashMap<String, String> user = new HashMap<String, String>();
 					user.put(CONSTANT.MSG_USERNAME, "USERNAME");
 					user.put(CONSTANT.MSG_PASSWORD, "PASSWORD");
-					currentUser.userInfo.setID("us2er");
+					currentUser.userInfo.setID("u1s3sr");
 					currentUser.userInfo.setPASSWORD("pass");
 					lbsMessage = new LBSMessage("$$" + name + "  " + "上线了！");
-					lbsMessage.setHEAD(CONSTANT.MSG_HEAD_COUNT);
-					lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_REGISTER);
+					lbsMessage.setHEAD(CONSTANT.MSG_HEAD_OPERATED);
+					lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_LOGIN);
 					lbsMessage.setUSER(currentUser.userInfo.getID());
 					lbsMessage.setPASS(currentUser.userInfo.getPASSWORD());
 					out.writeObject(lbsMessage);
@@ -165,7 +167,7 @@ public class Client extends JFrame implements Runnable, ActionListener {
 			thread.start();
 		}
 		else if (e.getSource() == sendMessageButton) {
-
+			System.out.println("sendMessageButton is Clicked");
 			if (currentUser.isLogin()) {	//当前用户已经成功登录
 				//获取需要发送的信息
 				chat_text = textSentField.getText();
@@ -173,7 +175,12 @@ public class Client extends JFrame implements Runnable, ActionListener {
 					//向服务器发送信息
 					try {
 						lbsMessage = new LBSMessage(currentUser.userInfo.getID() + "  " + "说:\n" + chat_text);
+						lbsMessage.setHEAD(CONSTANT.MSG_HEAD_ROOM_CHAT);
+						RoomInfo chatRoom = new RoomInfo();
+						chatRoom.setID("second room");
+						lbsMessage.setRoomInfo(chatRoom);
 						out.writeObject(lbsMessage);
+						
 					} catch (Exception e2) {
 						System.out.println("客户端发送信息错误！");
 					}
@@ -192,26 +199,40 @@ public class Client extends JFrame implements Runnable, ActionListener {
 			}
 		}
 		else if (e.getSource() == leaveButton) {
-			if (currentUser.isLogin()) {	//本账户已经成功登录
+			System.out.println("leaveButton is Clicked");
+			//			if (currentUser.isLogin()) {	//本账户已经成功登录
+			//				try {
+			//					lbsMessage = new LBSMessage();
+			//					lbsMessage.setHEAD(CONSTANT.MSG_HEAD_OPERATED);
+			//					lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_LOGOUT);
+			//					out.writeObject(lbsMessage);
+			//					out.flush();
+			//				} catch (Exception e2) {
+			//					System.err.println("客户端退出错误: " + e2);
+			//				}
+			//				currentUser.setLogin(false);
+			//			}
+			//			try {
+			//				out.close();
+			//				in.close();
+			//				socket.close();
+			//			} catch (Exception e2) {
+			//				System.err.println("客户端退出错误: " + e2);
+			//			}
+			//			this.setVisible(false);
+			if (currentUser.isLogin()) {
+				RoomInfo roomInfo = new RoomInfo();
+				roomInfo.setID("second room");
+				lbsMessage = new LBSMessage();
+				lbsMessage.setHEAD(CONSTANT.MSG_HEAD_ROOM);
+				lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM);
+				lbsMessage.setRoomInfo(roomInfo);
 				try {
-					lbsMessage = new LBSMessage();
-					lbsMessage.setHEAD(CONSTANT.MSG_HEAD_OPERATED);
-					lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_LOGOUT);
 					out.writeObject(lbsMessage);
-					out.flush();
-				} catch (Exception e2) {
-					System.err.println("客户端退出错误: " + e2);
+				} catch (IOException e1) {
+					e1.printStackTrace();
 				}
-				currentUser.setLogin(false);
 			}
-			try {
-				out.close();
-				in.close();
-				socket.close();
-			} catch (Exception e2) {
-				System.err.println("客户端退出错误: " + e2);
-			}
-			this.setVisible(false);
 		}
 	}
 
@@ -234,7 +255,28 @@ public class Client extends JFrame implements Runnable, ActionListener {
 			try {
 				LBSMessage recMessage = (LBSMessage) in.readObject();
 
+				//读取数据的ADDITION
+				String ADD = recMessage.getADDITION();
+
+				//读取数据的USER，以判断广播接收对象
+				String USER = recMessage.getUSER();
+
 				switch (recMessage.getHEAD()) {
+
+				case CONSTANT.MSG_HEAD_ROOM_CHAT:
+					
+					//读取服务器发来的数据BODY
+					chat_in = recMessage.getBODY();
+					
+					//读取服务器发来的数据的聊天室参数
+					String roomInfo = recMessage.getRoomInfo().getID();
+					
+					if (chat_in != null && !(chat_in.equals(""))) {
+						
+						//显示消息
+						jTextArea.append(roomInfo + ">>" + chat_in + "\n\n");
+					}
+					break;
 
 				case CONSTANT.MSG_HEAD_ORDINAl:		//普通广播消息
 
@@ -249,11 +291,6 @@ public class Client extends JFrame implements Runnable, ActionListener {
 
 				case CONSTANT.MSG_HEAD_BROADCAST:	//事务性广播消息
 
-					//读取数据的ADDITION
-					String ADD = recMessage.getADDITION();
-
-					//读取数据的USER，以判断广播接收对象
-					String USER = recMessage.getUSER();
 					if(USER.equals(currentUser.userInfo.getID())){	//广播接收对象为本客户端
 						if (ADD.equals(CONSTANT.MSG_ADDITION_LOGIN_SUCCEED)) {	//登录成功
 							jTextArea.setText("登陆成功!\n");
@@ -284,11 +321,35 @@ public class Client extends JFrame implements Runnable, ActionListener {
 							jTextArea.setText("注销失败!\n");
 							System.out.println("客户端注销失败，本客户端");
 						}
+
 					}
 					else {	//广播接收对象不是本客户端
 
 					}
 					break;
+
+				case CONSTANT.MSG_HEAD_ROOM:
+					if(USER.equals(currentUser.userInfo.getID())){	//广播接收对象为本客户端
+						if (ADD.equals(CONSTANT.MSG_ADDITION_CREATEROOM_SUCCEED)) {	//创建聊天室成功
+							jTextArea.setText("创建聊天室成功!\n");
+							System.out.println("创建聊天室成功，本客户端");
+						}
+						else if (ADD.equals(CONSTANT.MSG_ADDITION_CREATEROOM_FAILED)) {	//创建聊天室失败
+							jTextArea.setText("创建聊天室失败!\n");
+							System.out.println("创建聊天室失败，本客户端");
+						}
+						else if (ADD.equals(CONSTANT.MSG_ADDITION_JOINROOM_SUCCEED)) {	//加入聊天室成功
+							jTextArea.setText("加入聊天室成功!\n");
+							System.out.println("加入聊天室成功，本客户端");
+						}
+						else if (ADD.equals(CONSTANT.MSG_ADDITION_JOINROOM_FAILED)) {	//加入聊天室失败
+							jTextArea.setText("加入聊天室失败!\n");
+							System.out.println("加入聊天室失败，本客户端");
+						}
+					}
+					else {	//广播接收对象不是本客户端
+
+					}
 
 				default:
 					break;

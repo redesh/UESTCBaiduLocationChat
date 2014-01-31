@@ -28,6 +28,9 @@ public class ServerThread extends Thread{
 	//用以存储客户端发来的，服务器接收到但未发送出去的给另客户端信息
 	Vector<LBSMessage> messages;
 	
+	//用以存储服务器上存在的聊天室
+	Vector<RoomThread> rooms;
+	
 	//BroadCast类负责服务器向客户端广播信息
 	BroadCast broadCast;
 	
@@ -37,6 +40,7 @@ public class ServerThread extends Thread{
 	public ServerThread() {
 		clients = new Vector<ClientThread>();
 		messages = new Vector<LBSMessage>();
+		rooms = new Vector<RoomThread>();
 		
 		try {
 			
