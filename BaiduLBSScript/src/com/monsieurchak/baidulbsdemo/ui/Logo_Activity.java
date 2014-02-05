@@ -1,11 +1,7 @@
 package com.monsieurchak.baidulbsdemo.ui;
 
 import com.monsieurchak.baidulbsdemo.R;
-import com.monsieurchak.baidulbsdemo.bean.UserInfo;
-import com.monsieurchak.baidulbsdemo.db.DBManager;
-
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
@@ -45,12 +41,6 @@ public class Logo_Activity extends Activity implements AnimationListener{
 		Intent intent = new Intent(Logo_Activity.this, Login_Activity.class);
 		startActivity(intent);
 		this.finish();
-		
-//		DBManager dbManager = new DBManager(this);
-//		UserInfo userInfo = new UserInfo("2011042020030", "djzhu223013", "DJ23ZHU", "emai23l", "o2k", "233", "223", "noth2323ing is impossible!");
-//		dbManager.dbAdd(userInfo);
-//		Log.d("TAG", dbManager.query().toString());
-//		dbManager.closeDB();
 	}
 
 	@Override

@@ -1,8 +1,10 @@
 package mix;
 
 import java.util.Vector;
-import bean.LBSMessage;
-import bean.RoomInfo;
+
+import com.monsieurchak.baidulbsdemo.bean.CONSTANT;
+import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
+import com.monsieurchak.baidulbsdemo.bean.RoomInfo;
 
 public class RoomThread extends Thread{
 
@@ -45,6 +47,8 @@ public class RoomThread extends Thread{
 				}
 				
 				lbsMessage = (LBSMessage)roomMessages.firstElement();
+				lbsMessage.setHEAD(CONSTANT.MSG_HEAD_ROOM_CHAT);
+				lbsMessage.setUSER(CONSTANT.MSG_ALLUSER);
 				synchronized (roomClients) {
 					System.out.println("当前聊天室" + roomInfo.getID() + "共有客户端" + roomClients.size() + "个");
 					for (int i = 0; i < roomClients.size(); i++) {

@@ -10,11 +10,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+
+import com.monsieurchak.baidulbsdemo.bean.CONSTANT;
+import com.monsieurchak.baidulbsdemo.bean.DBInfo;
+import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
+import com.monsieurchak.baidulbsdemo.bean.RoomInfo;
+
 import db.DBManager;
-import bean.CONSTANT;
-import bean.DBInfo;
-import bean.LBSMessage;
-import bean.RoomInfo;
 
 /**
  * 单个服务端与客户端连接程序
@@ -77,7 +79,7 @@ public class ClientThread extends Thread{
 			try {
 
 				lbsMessage = (LBSMessage) in.readObject();
-
+				System.out.println("接收到消息");
 				switch(lbsMessage.getHEAD()){	//判定消息HEAD
 
 				case CONSTANT.MSG_HEAD_ROOM_CHAT:	//聊天室普通聊天信息
@@ -87,7 +89,7 @@ public class ClientThread extends Thread{
 
 					//读入客户端发来的聊天室信息
 					RoomInfo roomInfo = lbsMessage.getRoomInfo();
-
+					
 					//检查聊天信息合法性
 					if (roomMessage != null && !(roomMessage.equals(""))){
 
@@ -98,11 +100,10 @@ public class ClientThread extends Thread{
 							RoomThread room = serverThread.rooms.get(i);
 							if (room.roomInfo.getID().equals(roomInfo.getID())) {
 								synchronized (room.roomMessages) {
-									System.out.println("发送消息、、、");
 									Date time = new Date(System.currentTimeMillis());
 									SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
 									String timestr= format.format(time);
-									roomMessage = timestr + ">>" + roomMessage;
+									roomMessage = room.roomInfo.getID() + "@" + timestr + ">>" + roomMessage;
 									room.roomMessages.addElement(new LBSMessage(roomMessage));
 
 									//服务器端文本框显示新消息
@@ -138,7 +139,8 @@ public class ClientThread extends Thread{
 					break;
 
 				case CONSTANT.MSG_HEAD_OPERATED:	//登录注销操作
-
+					
+					System.out.println("登录操作" + lbsMessage.getUSER());
 					//String user用于MYSQL查询语句，需添加""
 					String user_login = lbsMessage.getUSER();	
 					String password_login = lbsMessage.getPASS();
@@ -226,7 +228,6 @@ public class ClientThread extends Thread{
 						registerResultMSG.setHEAD(CONSTANT.MSG_HEAD_BROADCAST);
 
 						//发送给指定用户
-						//注意此用户名带有两个"，需要注意匹配
 						registerResultMSG.setUSER(user_reg);
 						if (list.isEmpty()) {	//数据库中此用户名没被注册
 							Date time = new Date(System.currentTimeMillis());
@@ -274,6 +275,9 @@ public class ClientThread extends Thread{
 							//如果服务器上存在指定的聊天室
 							if (room.roomInfo.getID().equals(lbsMessage.getRoomInfo().getID())) {	
 								room.roomClients.add(this);
+								RoomInfo pickedRoom = new RoomInfo();
+								pickedRoom.setID(lbsMessage.getRoomInfo().getID());
+								RoomResult.setRoomInfo(pickedRoom);
 								RoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_SUCCEED);
 								serverThread.messages.add(RoomResult);
 								isLogin = true;
@@ -309,6 +313,7 @@ public class ClientThread extends Thread{
 							newRoom.roomClients.add(this);
 							serverThread.rooms.add(newRoom);
 							RoomResult.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM_SUCCEED);
+							RoomResult.setRoomInfo(roomInfo1);
 							serverThread.messages.add(RoomResult);
 						}
 					}

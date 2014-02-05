@@ -1,6 +1,6 @@
 package server;
 
-import bean.UserInfo;
+import com.monsieurchak.baidulbsdemo.bean.UserInfo;
 
 public class CurrentUser {
 

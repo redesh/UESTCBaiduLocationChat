@@ -1,11 +1,15 @@
 package com.monsieurchak.baidulbsdemo.ui;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.monsieurchak.baidulbsdemo.R;
 import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
+import com.monsieurchak.baidulbsdemo.bean.TAG;
+import com.monsieurchak.baidulbsdemo.bean.Task;
+import com.monsieurchak.baidulbsdemo.logic.MainService;
+import com.monsieurchak.baidulbsdemo.logic.ServiceThread;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.os.Bundle;
@@ -26,7 +30,7 @@ import android.widget.Toast;
  * @author monsieurchak
  *
  */
-public class ChatRoom_Activity extends Activity implements OnClickListener, UIActivity, Runnable{
+public class ChatRoom_Activity extends Activity implements OnClickListener, UIActivity{
 
 	ListView dialogListView;
 	Button sendButton;
@@ -36,24 +40,14 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 
 	//chat_text: 有待发送出去的消息
 	//chat_in: 从服务器接收到的消息
-	private String chat_text, chat_in;
-	private String userName = "DJZhu";
-	private String ip = "192.168.1.102";
-
-	//Socket通信端口号
-	public static final int PORT = 8521;
-
-	//声明套接字对象和线程对象
-	Socket socket;
-
-	//声明客户端数据输入输出流
-	ObjectInputStream in;
-	ObjectOutputStream out;
+	private String chat_text;
 
 	//是否成功进入聊天室的标志
 	boolean flag = false;
 
 	LBSMessage message = null;
+	
+	ServiceThread.chatThread chatThread;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,29 +60,7 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 		sendButton = (Button)findViewById(R.id.dialog_send_btn);
 		sendButton.setOnClickListener(this);
 		sendText = (EditText)findViewById(R.id.dialog_send_edit);
-
-		//在子线程中启动连接
-		Thread threadInit = new Thread(){
-			@Override
-			public void run() {
-
-				//判断数据合法性
-				try {
-
-					//创建Socket对象
-					socket = new Socket(ip,PORT);
-					in = new ObjectInputStream(socket.getInputStream());
-					out = new ObjectOutputStream(socket.getOutputStream());
-					message = new LBSMessage("$$" + userName + "  "  + getCurrentTime() + "上线了！");
-					out.writeObject(message);
-				} catch (Exception e2) {
-					Log.d("TAG", "无法连接错误:" + e2.toString());
-				}
-			}
-		};
-		threadInit.start();
-		
-		new Thread(ChatRoom_Activity.this).start();
+		MainService.addActivity(ChatRoom_Activity.this);
 	}
 
 
@@ -96,22 +68,24 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 	@Override
 	public void onClick(View v) {
 		chat_text = sendText.getText().toString();
-		sendText.setText("");
 		if (chat_text != null ) {
 			if (!chat_text.equals("")) {
 
 				//向服务器发送信息
 				try {
-					message = new LBSMessage("--" + userName + "  " + getCurrentTime() + "说:\n" + chat_text);
-					out.writeObject(message);
+					message = new LBSMessage(">>" + "说:\n" + chat_text);
+					HashMap<String, Object> send = new HashMap<String, Object>();
+					send.put("msg", message);
+					MainService.addTask(new Task(Task.ROOM_CHAT, send));
 				} catch (Exception e2) {
-					System.out.println("客户端发送信息错误！");
+					Log.d(TAG.NET,"客户端发送信息错误！");
 				}
 			}
 			else {
 				Toast.makeText(this, "不能发送空消息！", Toast.LENGTH_SHORT).show();
 			}
 		}
+		
 	}
 
 
@@ -122,29 +96,9 @@ public class ChatRoom_Activity extends Activity implements OnClickListener, UIAc
 
 	@Override
 	public void refresh(Object... params) {
-	}
-
-
-
-	@Override
-	public void run() {
-		try {
-			socket = new Socket(ip,PORT);
-			in = new ObjectInputStream(socket.getInputStream());
-			while (true) {
-				message = (LBSMessage) in.readObject();
-				chat_in = message.getBODY();
-				if (!"".equals(chat_in)) {
-					Bundle bundle = new Bundle();
-					bundle.putString("msg", chat_in);
-					Message msg = new Message();
-					msg.setData(bundle);
-					handler.sendMessage(msg);
-				}
-			}
-		} catch (Exception e) {
-			Log.d("TAG", "接受消息错误：" + e.toString());
-		}
+		String msg = (String)params[0];
+		arrayList.add(msg);
+		adapter.notifyDataSetChanged();
 	}
 	
 	@SuppressLint("HandlerLeak")

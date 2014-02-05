@@ -6,9 +6,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
+import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
 
 
-import bean.LBSMessage;
+
 
 /**
  * 服务器端监听程序
@@ -72,7 +73,7 @@ public class ServerThread extends Thread{
 				
 				//获取客户端连接，并返回一个新的socket对象
 				Socket socket = serverSocket.accept();
-				System.out.println(socket.getInetAddress().getHostAddress());
+				System.out.println("客户端连接: " + socket.getInetAddress().getHostAddress());
 				
 				//创建ClientThread线程并启动
 				ClientThread clientThread = new ClientThread(socket,this);

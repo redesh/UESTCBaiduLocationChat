@@ -29,7 +29,7 @@ public class DBManager {
 					userInfo.ID, 
 					userInfo.PASSWORD, 
 					userInfo.NICKNAME, 
-					userInfo.STATES, 
+					userInfo.STATUS, 
 					userInfo.LAST_LOGIN_TIME, 
 					userInfo.LOGIN_COUNTER, 
 					userInfo.SIGN});

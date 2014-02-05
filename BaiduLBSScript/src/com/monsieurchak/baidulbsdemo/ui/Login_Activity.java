@@ -1,16 +1,13 @@
 package com.monsieurchak.baidulbsdemo.ui;
 
 import java.util.HashMap;
-
 import com.monsieurchak.baidulbsdemo.R;
-import com.monsieurchak.baidulbsdemo.bean.APP_Constants;
+import com.monsieurchak.baidulbsdemo.bean.CONSTANT;
 import com.monsieurchak.baidulbsdemo.bean.Task;
 import com.monsieurchak.baidulbsdemo.logic.MainService;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -23,7 +20,7 @@ public class Login_Activity extends Activity implements UIActivity,OnClickListen
 	Button loginButton;
 	EditText iDEditText, pwEditText;
 	TextView findIDBackTextView, registIDTextView;
-
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,22 +48,24 @@ public class Login_Activity extends Activity implements UIActivity,OnClickListen
 	//根据MainService返回的结果刷新UI
 	@Override
 	public void refresh(Object... params) {
-		if (params[0].equals(APP_Constants.SUCCESSFUL)) {
+		Integer MSG = (Integer) params[0];
+		switch (MSG) {
+		case CONSTANT.LOGIN_SUCCEED:
 			Intent intent = new Intent(this,ChatRoomList_Activity.class);
 			startActivity(intent);
 			this.finish();
-		}
-		else if(params[0].equals(APP_Constants.FAILE)) {
+			break;
+		case CONSTANT.LOGIN_FAILED:
 			Toast.makeText(this, "登录失败", Toast.LENGTH_SHORT).show();
-		}
-		else {
-			
+			break;
+		default:
+			break;
 		}
 	}
 
 	@Override
 	public void onClick(View v) {
-		// TODO Auto-generated method stub
+
 		switch (v.getId()) {
 		case R.id.Login:
 			String userID = iDEditText.getText().toString();
@@ -77,17 +76,17 @@ public class Login_Activity extends Activity implements UIActivity,OnClickListen
 			else if (passWord == null || passWord.equals("")) {
 				Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
 			}
-			else {
+			else {	//合法性检测成功
 				HashMap<String, Object> userMap = new HashMap<String, Object>();
-				userMap.put(APP_Constants.UESERID, userID);
-				userMap.put(APP_Constants.USERPW, passWord);
 				
-				Log.d("TAG", "onClick");
+				userMap.put(CONSTANT.USERNAME, userID);
+				userMap.put(CONSTANT.PASSWORD, passWord);
+				
 				//将用户名和密码打包提交给MainService处理
 				MainService.addTask(new Task(Task.LOGIN, userMap));
 				
 				//将本Activity一并提交到MainService等待回调处理
-				MainService.addActivity(this);
+				MainService.addActivity(Login_Activity.this);
 			}
 			break;
 			

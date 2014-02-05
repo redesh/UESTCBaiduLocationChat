@@ -1,7 +1,8 @@
 package mix;
 
 import java.io.IOException;
-import bean.LBSMessage;
+
+import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
 
 /**
  * 服务器端广播程序
@@ -42,8 +43,10 @@ public class BroadCast extends Thread{
 						
 							//向有记录的每一个客户端发送数据信息
 							clientThread.out.writeObject(lbsMessage);
+							System.out.println("成功发送一条消息" + i);
 						} catch (IOException e2) {
 							System.out.println("普通广播I/O错误--》--：" + e2.toString());
+							//serverThread.clients.removeElement(clientThread);
 						}
 					}
 

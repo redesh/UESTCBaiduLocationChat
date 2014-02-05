@@ -36,11 +36,11 @@ public final class R {
         public static final int id0003=0x7f020005;
     }
     public static final class id {
-        public static final int ID=0x7f090009;
-        public static final int LinearLayout1=0x7f090010;
-        public static final int Login=0x7f09000b;
+        public static final int ID=0x7f09000c;
+        public static final int Login=0x7f09000e;
         public static final int RelativeLayout1=0x7f090000;
         public static final int action_settings=0x7f09001a;
+        public static final int buttonCreateRoom=0x7f09000b;
         public static final int buttonRegister=0x7f090019;
         public static final int dialog_listview=0x7f090001;
         public static final int dialog_send_btn=0x7f090003;
@@ -48,18 +48,18 @@ public final class R {
         public static final int editTextEmail=0x7f090018;
         public static final int editTextID=0x7f090014;
         public static final int editTextPassword=0x7f090016;
-        public static final int findIDBack=0x7f09000c;
+        public static final int editTextRoomID=0x7f090009;
+        public static final int editTextRoomName=0x7f09000a;
+        public static final int findIDBack=0x7f09000f;
         public static final int imageButtonIcon=0x7f090013;
         public static final int imageView1=0x7f090004;
-        public static final int logo_Text=0x7f09000e;
-        public static final int passWord=0x7f09000a;
-        public static final int registID=0x7f09000d;
+        public static final int logo_Text=0x7f090011;
+        public static final int passWord=0x7f09000d;
+        public static final int registID=0x7f090010;
         public static final int test_baidu_map_create=0x7f090008;
         public static final int test_baidu_map_tip=0x7f090006;
         public static final int test_baidu_map_yeah=0x7f090007;
-        public static final int test_button_yeah=0x7f090012;
-        public static final int testregist=0x7f090011;
-        public static final int text1=0x7f09000f;
+        public static final int text1=0x7f090012;
         public static final int textView1=0x7f090005;
         public static final int textView2=0x7f090015;
         public static final int textView3=0x7f090017;
@@ -72,7 +72,6 @@ public final class R {
         public static final int activity_logo=0x7f030004;
         public static final int dialog_listview=0x7f030005;
         public static final int layout_register=0x7f030006;
-        public static final int layout_vain=0x7f030007;
     }
     public static final class menu {
         public static final int logo_=0x7f080000;
@@ -91,11 +90,15 @@ public final class R {
         public static final int login=0x7f070005;
         public static final int logo_background=0x7f070003;
         public static final int password=0x7f070009;
+        public static final int register=0x7f070013;
         public static final int registerID=0x7f070007;
+        public static final int roomID=0x7f070014;
+        public static final int roomName=0x7f070015;
         public static final int test_baidu_map=0x7f07000c;
         public static final int test_baidu_map_tip=0x7f07000d;
         public static final int test_button_yes=0x7f07000b;
         public static final int test_regist=0x7f07000a;
+        public static final int userIcon=0x7f070012;
     }
     public static final class style {
         /** 

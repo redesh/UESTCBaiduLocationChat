@@ -8,18 +8,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.HashMap;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import com.monsieurchak.baidulbsdemo.bean.CONSTANT;
+import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
+import com.monsieurchak.baidulbsdemo.bean.RoomInfo;
 
 import server.CurrentUser;
 
-import bean.CONSTANT;
-import bean.LBSMessage;
-import bean.RoomInfo;
 
 /**
  * PC客户端
@@ -48,8 +47,8 @@ public class Client extends JFrame implements Runnable, ActionListener {
 	//声明字符串. name用户名，chat_text发送的信息， chat_in从服务器接受到信息
 	String name, chat_text, chat_in;
 
-	//客户端IP地址
-	String ip = "192.168.56.1";
+	//服务器IP地址
+	String ip = null;
 
 	//当前用户对象
 	private static CurrentUser currentUser = null;
@@ -146,11 +145,9 @@ public class Client extends JFrame implements Runnable, ActionListener {
 
 					//创建Socket对象
 					socket = new Socket(ip,PORT);
+					System.out.println("SysIP" + socket.getInetAddress());
 					out = new ObjectOutputStream(socket.getOutputStream());
-					HashMap<String, String> user = new HashMap<String, String>();
-					user.put(CONSTANT.MSG_USERNAME, "USERNAME");
-					user.put(CONSTANT.MSG_PASSWORD, "PASSWORD");
-					currentUser.userInfo.setID("u1s3sr");
+					currentUser.userInfo.setID("ussr");
 					currentUser.userInfo.setPASSWORD("pass");
 					lbsMessage = new LBSMessage("$$" + name + "  " + "上线了！");
 					lbsMessage.setHEAD(CONSTANT.MSG_HEAD_OPERATED);
@@ -225,7 +222,7 @@ public class Client extends JFrame implements Runnable, ActionListener {
 				roomInfo.setID("second room");
 				lbsMessage = new LBSMessage();
 				lbsMessage.setHEAD(CONSTANT.MSG_HEAD_ROOM);
-				lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM);
+				lbsMessage.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM);
 				lbsMessage.setRoomInfo(roomInfo);
 				try {
 					out.writeObject(lbsMessage);
@@ -247,7 +244,7 @@ public class Client extends JFrame implements Runnable, ActionListener {
 
 			//注意ObjectInputStream初始化之后不能立即使用(如ObjectInputStream.readObject()方法)
 			//大概是因为ObjectInputStream初始化需要时间的原因
-			in = new ObjectInputStream(new BufferedInputStream(socket.getInputStream()));
+			in = new ObjectInputStream(socket.getInputStream());
 		} catch (IOException e1) {
 			System.err.println("ObjectInputStream初始化错误: " + e1);
 		}
@@ -269,12 +266,12 @@ public class Client extends JFrame implements Runnable, ActionListener {
 					chat_in = recMessage.getBODY();
 					
 					//读取服务器发来的数据的聊天室参数
-					String roomInfo = recMessage.getRoomInfo().getID();
+//					String roomInfo = recMessage.getRoomInfo().getID();
 					
 					if (chat_in != null && !(chat_in.equals(""))) {
 						
 						//显示消息
-						jTextArea.append(roomInfo + ">>" + chat_in + "\n\n");
+						jTextArea.append(">>" + chat_in + "\n\n");
 					}
 					break;
 

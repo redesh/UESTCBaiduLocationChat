@@ -8,6 +8,8 @@ public class Task {
 	public static final int REGIST = 2;		//注册帐号
 	public static final int FINDIDBACK = 3;	//找回密码
 	public static final int JOIN_ROOM = 4;	//加入聊天室
+	public static final int CREATE_ROOM = 5;//创建聊天室
+	public static final int ROOM_CHAT = 6;	//聊天室消息任务
 	
 	//任务ID，全局唯一，指定MainService的Task类型
 	public int TaskID;

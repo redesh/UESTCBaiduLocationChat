@@ -4,11 +4,29 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
+    <EditText
+        android:id="@+id/editTextRoomID"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="创建聊天室，待完善"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
+        android:ems="10"
+        android:hint="@string/roomID"
+        android:inputType="textPersonName" >
+
+        <requestFocus />
+    </EditText>
+
+    <EditText
+        android:id="@+id/editTextRoomName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="@string/roomName"
+        android:inputType="textPersonName" />
+
+    <Button
+        android:id="@+id/buttonCreateRoom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/creat_chat_room" />
 
 </LinearLayout>
