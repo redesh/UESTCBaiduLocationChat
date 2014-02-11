@@ -1,0 +1,156 @@
+package com.monsieurchak.baidumapdemo.bean;
+
+public class CONSTANT {
+
+	/**
+	 * 以下为Message的HEAD标志符常量
+	 */
+	
+	//普通消息头部标志
+	public static final int MSG_HEAD_ORDINAl = 1;
+	
+	//逻辑操作消息头部标志，包括登陆、注销等
+	public static final int MSG_HEAD_OPERATED = 2;
+	
+	//账户操作消息头部标志，包括注册，查询等
+	public static final int MSG_HEAD_COUNT = 3;
+	
+	//服务器事务性广播头部标志
+	public static final int MSG_HEAD_BROADCAST = 4;
+	
+	//聊天室相关事务性消息头部标志，包括加入，创建聊天室
+	public static final int MSG_HEAD_ROOM = 5;
+	
+	//聊天室普通消息头部标志
+	public static final int MSG_HEAD_ROOM_CHAT = 6;
+	
+	//搜索聊天室消息头部标志
+	public static final int MSG_HEAD_ROOM_SEARCH = 7;
+	
+	/**
+	 * 以下为Message的ADDITION标识符常量
+	 */
+	
+	//登录
+	public static final String MSG_ADDITION_LOGIN = "LOGIN";
+	
+	//注销
+	public static final String MSG_ADDITION_LOGOUT = "LOGOUT";
+	
+	//登录成功广播
+	public static final String MSG_ADDITION_LOGIN_SUCCEED = "MSG_ADDITION_LOGIN_SUCCEED";
+	
+	//登录失败广播
+	public static final String MSG_ADDITION_LOGIN_FAILED = "MSG_ADDITION_LOGIN_FAILED";
+	
+	//注册
+	public static final String MSG_ADDITION_REGISTER = "MSG_ADDITION_REGISTER";
+	
+	//注册成功
+	public static final String MSG_ADDITION_REGISTER_SUCCEED = "MSG_ADDITION_REGISTER_SUCCEED";
+	
+	//注册失败
+	public static final String MSG_ADDITION_REGISTER_FAILED = "MSG_ADDITION_REGISTER_FAILED";
+	
+	//注销成功
+	public static final String MSG_ADDITION_LOGOUT_SUCCEED = "MSG_ADDITION_LOGOUT_SUCCEED";
+	
+	//注销失败
+	public static final String MSG_ADDITION_LOGOUT_FAILED = "MSG_ADDITION_LOGOUT_FAILED";
+	
+	//创建聊天室
+	public static final String MSG_ADDITION_CREATEROOM = "MSG_ADDITION_CREATEROOM";
+	
+	//加入聊天室
+	public static final String MSG_ADDITION_JOINROOM = "MSG_ADDITION_JOINROOM";
+	
+	//创建聊天室成功
+	public static final String MSG_ADDITION_CREATEROOM_SUCCEED = "MSG_ADDITION_CREATEROOM_SUCCEED";
+	
+	//创建聊天室失败
+	public static final String MSG_ADDITION_CREATEROOM_FAILED = "MSG_ADDITION_CREATEROOM_FAILED";
+	
+	//加入聊天室成功
+	public static final String MSG_ADDITION_JOINROOM_SUCCEED = "MSG_ADDITION_JOINROOM_SUCCEED";
+	
+	//加入聊天室失败
+	public static final String MSG_ADDITION_JOINROOM_FAILED = "MSG_ADDITION_JOINROOM_FAILED";
+	
+	//退出聊天室
+	public static final String MSG_ADDITION_QUITROOM = "MSG_ADDITION_JOINROOM_QUITROOM";
+	
+	//所有用户
+	public static final String MSG_ALLUSER = "MSG_ALLUSER";
+	
+	//搜索聊天室成功
+	public static final String MSG_ADDITION_SEARCH_ROOM_SUCCED = "MSG_SEARCH_ROOM_SUCCED";
+	
+	//搜索聊天室失败
+	public static final String MSG_ADDITION_SEARCH_ROOM_FAILED = "MSG_SEARCH_ROOM_FAILED";
+	
+	/**
+	 * APP内部通信标志
+	 */
+	
+	//成功
+	public static final int SUCCEED = 1;
+	
+	//失败
+	public static final int FAILED = 2;
+	
+	//用户名
+	public static final String USERNAME = "USERNAME";
+	
+	//密码
+	public static final String PASSWORD = "PASSWORD";
+	
+	public static final String EMAIL = "email";
+	
+	//登录成功
+	public static final int LOGIN_SUCCEED = 3;
+	
+	//登录失败
+	public static final int LOGIN_FAILED = 4;
+	
+	//注册成功
+	public static final int REG_SUCCED = 5;
+	
+	//注册失败
+	public static final int REG_FAILED = 6;
+	
+	//聊天室ID
+	public static final String ROOM_ID_LOCAL = "ROOM_ID";
+	
+	//聊天室Name
+	public static final String ROOM_NAME = "ROOM_NAME";
+	
+	//聊天室具体位置
+	public static final String ROOM_LOCATION = "ROOM_LOCATION";
+	
+	//创建聊天室
+	public static final String CREATE_ROOM = "CREATE_ROOM";
+	
+	//加入聊天室
+	public static final String JOIN_ROOM = "JOIN_ROOM";
+	
+	//查找聊天室
+	public static final String SEARCH_ROOM = "SEARCH_ROOM";
+	
+	//
+	
+	/**
+	 * 业务常量
+	 */
+	
+	
+	/**
+	 * 注意：新、旧Key之间不可通用，即新Key只可以使用在v2.1.3及后续版本的SDK中，
+	 * 旧的Key只适用于v2.1.2及之前版本的SDK。旧的Key服务我们会长期保留，请用户不用担心！ 
+	 * 这里使用的是V2.1.2的版本
+	 */
+	//百度地图KEY
+	public static final String BAIDU_MAP_KEP = "6BFBEBAC0802180F7984763C57C6484CA6F8FC85";
+	
+	//搜寻附近的人经度
+	public static int ACCURACY = (int) 1E2;
+}

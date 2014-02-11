@@ -2,9 +2,9 @@ package mix;
 
 import java.util.Vector;
 
-import com.monsieurchak.baidulbsdemo.bean.CONSTANT;
-import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
-import com.monsieurchak.baidulbsdemo.bean.RoomInfo;
+import com.monsieurchak.baidumapdemo.bean.CONSTANT;
+import com.monsieurchak.baidumapdemo.bean.LBSMessage;
+import com.monsieurchak.baidumapdemo.bean.RoomInfo;
 
 public class RoomThread extends Thread{
 

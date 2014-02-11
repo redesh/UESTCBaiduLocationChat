@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.monsieurchak.baidulbsdemo"
+    package="com.monsieurchak.baidumapdemo"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -8,8 +8,48 @@
         android:minSdkVersion="8"
         android:targetSdkVersion="19" />
 
+    <!-- 使用网络功能所需权限 -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.INTERNET" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" >
+    </uses-permission>
+    <!-- SDK离线地图和cache功能需要读写外部存储器 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" >
+    </uses-permission>
+    <!-- 获取设置信息和详情页直接拨打电话需要以下权限 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.CALL_PHONE" >
+    </uses-permission>
+    <!-- 使用定位功能所需权限,demo已集成百度定位SDK,不使用定位功能可去掉以下6项 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" >
+    </uses-permission>
+
+    <permission android:name="android.permission.BAIDU_LOCATION_SERVICE" >
+    </permission>
+
+    <uses-permission android:name="android.permission.BAIDU_LOCATION_SERVICE" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_MOCK_LOCATION" >
+    </uses-permission>
+    <uses-permission android:name="android.permission.ACCESS_GPS" />
     <uses-permission android:name="android.permission.INTERNET" />
-    
+
+    <supports-screens
+        android:anyDensity="true"
+        android:largeScreens="true"
+        android:normalScreens="true"
+        android:resizeable="true"
+        android:smallScreens="true" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
@@ -24,13 +64,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.monsieurchak.baidulbsdemo.ui.Login_Activity" />
-        <activity android:name="com.monsieurchak.baidulbsdemo.ui.Register_Activity" />
-        <activity android:name="com.monsieurchak.baidulbsdemo.ui.ChatRoomList_Activity" />
-        <activity android:name="com.monsieurchak.baidulbsdemo.ui.ChatRoom_Activity" />
-        <activity android:name="com.monsieurchak.baidulbsdemo.ui.CreateChatRoom_Activity" />
+        <activity android:name="com.monsieurchak.baidumapdemo.ui.Login_Activity" />
+        <activity android:name="com.monsieurchak.baidumapdemo.ui.Register_Activity" />
+        <activity
+            android:name="com.monsieurchak.baidumapdemo.ui.ChatRoomList_Activity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="sensor" />
+        <activity android:name="com.monsieurchak.baidumapdemo.ui.ChatRoom_Activity" />
+        <activity android:name="com.monsieurchak.baidumapdemo.ui.CreateChatRoom_Activity" />
 
-        <service android:name="com.monsieurchak.baidulbsdemo.logic.MainService" />
+        <service android:name="com.monsieurchak.baidumapdemo.logic.MainService" />
     </application>
 
 </manifest>

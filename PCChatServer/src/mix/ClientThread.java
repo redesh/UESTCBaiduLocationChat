@@ -11,10 +11,10 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 
-import com.monsieurchak.baidulbsdemo.bean.CONSTANT;
-import com.monsieurchak.baidulbsdemo.bean.DBInfo;
-import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
-import com.monsieurchak.baidulbsdemo.bean.RoomInfo;
+import com.monsieurchak.baidumapdemo.bean.CONSTANT;
+import com.monsieurchak.baidumapdemo.bean.DBInfo;
+import com.monsieurchak.baidumapdemo.bean.LBSMessage;
+import com.monsieurchak.baidumapdemo.bean.RoomInfo;
 
 import db.DBManager;
 
@@ -98,12 +98,12 @@ public class ClientThread extends Thread{
 
 							//如果存在目标聊天室
 							RoomThread room = serverThread.rooms.get(i);
-							if (room.roomInfo.getID().equals(roomInfo.getID())) {
+							if (room.roomInfo.getNAME().equals(roomInfo.getNAME())) {
 								synchronized (room.roomMessages) {
 									Date time = new Date(System.currentTimeMillis());
 									SimpleDateFormat format = new SimpleDateFormat("hh:mm:ss");
 									String timestr= format.format(time);
-									roomMessage = room.roomInfo.getID() + "@" + timestr + ">>" + roomMessage;
+									roomMessage = room.roomInfo.getNAME() + "@" + timestr + ">>" + roomMessage;
 									room.roomMessages.addElement(new LBSMessage(roomMessage));
 
 									//服务器端文本框显示新消息
@@ -264,31 +264,45 @@ public class ClientThread extends Thread{
 					if (this.userName == null) {	//用户必须先行登录
 						break;
 					}
-					LBSMessage RoomResult = new LBSMessage();
-					RoomResult.setHEAD(CONSTANT.MSG_HEAD_ROOM);
-					RoomResult.setUSER(this.userName);
+					LBSMessage joinRoomResult = new LBSMessage();
+					joinRoomResult.setHEAD(CONSTANT.MSG_HEAD_ROOM);
+					joinRoomResult.setUSER(this.userName);
 					if (lbsMessage.getADDITION().equals(CONSTANT.MSG_ADDITION_JOINROOM)) {
-						boolean isLogin = false;
+						boolean isJoin = false;
 						for (int i = 0; i < serverThread.rooms.size(); i++) {
 							RoomThread room = serverThread.rooms.get(i);
 
 							//如果服务器上存在指定的聊天室
-							if (room.roomInfo.getID().equals(lbsMessage.getRoomInfo().getID())) {	
+							if (room.roomInfo.getNAME().equals(lbsMessage.getRoomInfo().getNAME())) {	
 								room.roomClients.add(this);
-								RoomInfo pickedRoom = new RoomInfo();
-								pickedRoom.setID(lbsMessage.getRoomInfo().getID());
-								RoomResult.setRoomInfo(pickedRoom);
-								RoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_SUCCEED);
-								serverThread.messages.add(RoomResult);
-								isLogin = true;
+								boolean isExistUser = false;
+								for (int j = 0; j < room.roomClients.size(); j++) {
+									if (room.roomClients.get(j).equals(this.userName)) {
+										isExistUser = true;
+									}
+								}
+								if (!isExistUser) {
+									RoomInfo pickedRoom = new RoomInfo();
+									pickedRoom.setNAME(lbsMessage.getRoomInfo().getNAME());
+									pickedRoom.setROOM_LOCATION(lbsMessage.getRoomInfo().getROOM_LOCATION());
+									joinRoomResult.setRoomInfo(pickedRoom);
+									joinRoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_SUCCEED);
+									serverThread.messages.add(joinRoomResult);
+									isJoin = true;
+								}
+								else {
+									joinRoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_FAILED);
+									serverThread.messages.add(joinRoomResult);
+								}
 							}
 							else {
-
+								joinRoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_FAILED);
+								serverThread.messages.add(joinRoomResult);
 							}
 						}
-						if (!isLogin) {
-							RoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_FAILED);
-							serverThread.messages.add(RoomResult);
+						if (!isJoin) {
+							joinRoomResult.setADDITION(CONSTANT.MSG_ADDITION_JOINROOM_FAILED);
+							serverThread.messages.add(joinRoomResult);
 						}
 					}
 					else if (lbsMessage.getADDITION().equals(CONSTANT.MSG_ADDITION_CREATEROOM)) {
@@ -299,30 +313,34 @@ public class ClientThread extends Thread{
 						for (int i = 0; i < serverThread.rooms.size(); i++) {	
 							room = serverThread.rooms.get(i);
 
-							//如果服务器上存在指定ID的聊天室
-							if (room.roomInfo.getID().equals(lbsMessage.getRoomInfo().getID())){
-								RoomResult.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM_FAILED);
-								serverThread.messages.add(RoomResult);
+							//如果服务器上存在指定ID的聊天室，即精确范围内已存在一个聊天室
+							if (room.roomInfo.getROOM_LOCATION().
+									equals(lbsMessage.getRoomInfo().getROOM_LOCATION())){
+								joinRoomResult.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM_FAILED);
+								serverThread.messages.add(joinRoomResult);
 								isExist = true;
+								System.out.println("同一地点有多个创建意图！");
 							}
 						}
 						if (!isExist) {
+							
+							//根据给定信息创建一个聊天室
 							RoomInfo roomInfo1 = lbsMessage.getRoomInfo();
 							RoomThread newRoom = new RoomThread(roomInfo1);
 							newRoom.start();
 							newRoom.roomClients.add(this);
 							serverThread.rooms.add(newRoom);
-							RoomResult.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM_SUCCEED);
-							RoomResult.setRoomInfo(roomInfo1);
-							serverThread.messages.add(RoomResult);
+							joinRoomResult.setADDITION(CONSTANT.MSG_ADDITION_CREATEROOM_SUCCEED);
+							joinRoomResult.setRoomInfo(roomInfo1);
+							serverThread.messages.add(joinRoomResult);
 						}
 					}
 					else if (lbsMessage.getADDITION().equals(CONSTANT.MSG_ADDITION_QUITROOM)) {
 						for (int i = 0; i < serverThread.rooms.size(); i++) {
 
-							//找到指定ID对应的聊天室
-							if (serverThread.rooms.get(i).roomInfo.getID().
-									equals(lbsMessage.getRoomInfo().getID())) {
+							//找到指定NAME对应的聊天室
+							if (serverThread.rooms.get(i).roomInfo.getNAME().
+									equals(lbsMessage.getRoomInfo().getNAME())) {
 								RoomThread quitRoomThread = serverThread.rooms.get(i);
 								quitRoomThread.roomClients.removeElement(this);
 							}
@@ -330,6 +348,42 @@ public class ClientThread extends Thread{
 					}
 					break;
 
+				case CONSTANT.MSG_HEAD_ROOM_SEARCH:
+					if (this.userName == null) {	//用户必须先行登录
+						break;
+					}
+					RoomThread room = null;
+					LBSMessage searchRoomResult = new LBSMessage();
+					searchRoomResult.setHEAD(CONSTANT.MSG_HEAD_ROOM_SEARCH);
+					searchRoomResult.setUSER(userName);
+					ArrayList<Object> roomsFound = new ArrayList<Object>();
+					
+					//遍历服务器中的聊天室
+					for (int i = 0; i < serverThread.rooms.size(); i++) {	
+						room = serverThread.rooms.get(i);
+
+						//如果服务器上存在指定ID的聊天室;即存在附近的聊天室
+						if (room.roomInfo.getID().
+								equals(lbsMessage.getRoomInfo().getID())){
+							RoomInfo found = new RoomInfo();
+							found.setID(room.roomInfo.getID());
+							found.setNAME(room.roomInfo.getNAME());
+							found.setROOM_LOCATION(room.roomInfo.getROOM_LOCATION());
+							roomsFound.add(found);
+						}
+					}
+					if (!roomsFound.isEmpty()) {
+						searchRoomResult.setADDITION(CONSTANT.MSG_ADDITION_SEARCH_ROOM_SUCCED);
+						searchRoomResult.setAddtionArrayList(roomsFound);
+						serverThread.messages.add(searchRoomResult);
+					}
+					else {
+						searchRoomResult.setADDITION(CONSTANT.MSG_ADDITION_SEARCH_ROOM_FAILED);
+						serverThread.messages.add(searchRoomResult);
+					}
+					
+					break;
+					
 				default:
 					break;
 				}

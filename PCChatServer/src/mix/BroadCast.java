@@ -2,7 +2,7 @@ package mix;
 
 import java.io.IOException;
 
-import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
+import com.monsieurchak.baidumapdemo.bean.LBSMessage;
 
 /**
  * 服务器端广播程序

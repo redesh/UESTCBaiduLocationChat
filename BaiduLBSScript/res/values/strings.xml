@@ -14,8 +14,8 @@
     <string name="test_regist">模拟注册界面，成功注册！\n 帐号：user 密码：pass</string>
     <string name="test_button_yes">确定</string>
     <string name="test_baidu_map">模拟百度地图API</string>
-    <string name="test_baidu_map_tip">请输入已有聊天室代号（1~10）</string>
-	<string name="chatRoomTips">模拟百度地图API——\n 1.输入聊天室代号，点击确认加入之\n 2.点击创建聊天室创建新的 </string>
+    <string name="test_baidu_map_tip">请输入聊天室名称</string>
+	<string name="chatRoomTips">百度地图API——\n 1.点击附近的聊天室加入\n 2.输入聊天室名称并点击创建聊天室创建新的 </string>
 	<string name="creat_chat_room">创建</string>
 	<string name="dialog_send">发送</string>
 	<string name="eMail">邮箱</string>

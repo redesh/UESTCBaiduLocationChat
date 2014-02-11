@@ -6,7 +6,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
-import com.monsieurchak.baidulbsdemo.bean.LBSMessage;
+import com.monsieurchak.baidumapdemo.bean.LBSMessage;
 
 
 
